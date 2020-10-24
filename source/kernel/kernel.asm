@@ -1,6 +1,5 @@
 [bits 32]
-[org 0x7e00]
-_start_kernel:
+_init_kernel:
     mov ebx, STRING
     call print
 
@@ -10,13 +9,13 @@ _start_kernel:
     call setup_paging_id
     call edit_gdt
 
-    jmp codeseg:_start_kernel_64
+    jmp codeseg:_init_kernel_64
 
     jmp $
 
-%include "source/kernel/CPUID.asm"
-%include "source/bootloader/gdt.asm"
-%include "source/kernel/identity_paging.asm"
+%include "bootloader/gdt.asm"
+%include "kernel/CPUID.asm"
+%include "kernel/identity_paging.asm"
 
 print:
     pusha
@@ -26,9 +25,9 @@ print:
         mov ah, 0x0f
         cmp al, 0
         je .end
-        mov [edx] , ax
-        add ebx , 1
-        add edx , 2
+        mov [edx], ax
+        add ebx, 1
+        add edx, 2
         jmp .loop
     .end:
     popa
@@ -38,12 +37,15 @@ STRING:
     db '32-bit mode! :D' , 0
 
 [bits 64]
+[extern _start_kernel]
 
-_start_kernel_64:
+_init_kernel_64:
     mov edi, 0xb8000
-    mov rax, 0x1f201f201f201f20
+    mov eax, 0x1f201f20
     mov ecx, 1000
     rep stosd
+
+    call _start_kernel
 
     jmp $
 

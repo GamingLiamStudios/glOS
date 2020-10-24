@@ -8,6 +8,10 @@ _entry_point: ; Bootloader
     mov sp, bp
     call disk_read ; Load Kernel into mem
 
+    mov ah, 0x0E ; Init
+    mov al, 'X'
+    int 0x10 ; Print char
+
     ; Enable A20
     in al, 0x92
     or al, 2
