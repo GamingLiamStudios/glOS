@@ -1,5 +1,5 @@
 print: ; Print a null-terminated string stored in si
-    mov ah, 0x0E ; Init
+    mov ah, 0x0e ; Init
     .loop:
         mov al, [si] ; Move value of si to al
         int 0x10 ; Print char
@@ -34,7 +34,7 @@ disk_read:
     .end:
     ret
 
-PROGRAM_SPACE equ 0x7E00
+PROGRAM_SPACE equ 0x7e00
 
 BOOT_DISK
     db 0

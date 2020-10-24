@@ -1,8 +1,10 @@
-[ORG 0x7C00]
+[ORG 0x7c00]
 
-main:
+main: ; Bootloader
     ; Init
     mov [BOOT_DISK], dl
+    mov bp, 0x7c00
+    mov sp, bp
 
     ; Hello World
     .str:
@@ -12,12 +14,11 @@ main:
 
     ; Read Data
     call disk_read
-    mov si, PROGRAM_SPACE
-    call print
+    jmp PROGRAM_SPACE
 
     jmp $
 
 %include "source/bootloader/io.asm"
 
 times 510 - ($ - $$) db 0 ; Fill rest of sector
-dw 0xAA55 ; Bootloader Identifier
+dw 0xaa55 ; Bootloader Identifier
