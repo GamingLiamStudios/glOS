@@ -1,3 +1,3 @@
 # glOS
 
-GamingLiamStudios' OS
+glOS(GamingLiamStudios' OS) is a 64-bit Operating system written from the ground up with a custom bootloader & kernel.
