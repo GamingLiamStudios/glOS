@@ -20,7 +20,6 @@ build/boot.bin: source/bootloader/bootloader.asm build/kernel.bin
 
 build/kernel.bin: build/kernel.tmp
 	objcopy -O binary $< $@; rm -f build/kernel.tmp
-
 build/kernel.tmp: build/entry.o build/kernel.o
 	ld -o $@ $(LDFLAGS) $^ 
 
