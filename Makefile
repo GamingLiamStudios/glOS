@@ -1,5 +1,5 @@
 SHELL = /bin/sh
-CFLAGS=-std=c99 -ffreestanding -m32 -Isource -c
+CFLAGS=-std=c99 -ffreestanding -m32 -Isource -O2 -c
 LDFLAGS=-Ttext 0x1000
 NFLAGS=-f
 ifeq ($(OS),Windows_NT)

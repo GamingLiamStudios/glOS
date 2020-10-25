@@ -1,3 +1,6 @@
+#pragma once
+#ifndef PORTIO
+#define PORTIO
 unsigned char port_in(unsigned short port) {
     unsigned char result;
     __asm__("in %%dx, %%al" : "=a"(result) : "d"(port));
@@ -14,5 +17,6 @@ void port_out(unsigned short port, unsigned char data) {
 void port_outw(unsigned short port, unsigned short data) {
     __asm__("out %%ax, %%dx" : : "a"(data), "d"(port));
 }
+#endif
 
 #define VIDEO_ADDRESS 0xb8000
