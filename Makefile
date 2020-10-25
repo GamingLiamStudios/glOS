@@ -15,7 +15,7 @@ all: build
 build: build/boot.bin
 
 # Compile Bootloader
-build/boot.bin: source/bootloader/bootloader.asm build/kernel.bin
+build/boot.bin: source/boot/bootloader.asm build/kernel.bin
 	nasm $< -f bin -o $@; dd if=build/kernel.bin of=$@ status=none conv=notrunc oflag=append
 
 build/kernel.bin: build/kernel.tmp
