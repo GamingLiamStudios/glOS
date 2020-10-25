@@ -52,7 +52,7 @@ disk_read:
     .end:
     ret
 
-%include "source/bootloader/gdt.asm"
+%include "source/boot/gdt.asm"
 
 BOOT_DRIVE: db 0
 
