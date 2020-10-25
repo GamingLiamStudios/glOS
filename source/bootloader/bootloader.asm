@@ -8,10 +8,10 @@ _entry_point: ; Bootloader
     mov bp, 0x8000 
     mov sp, bp 
 
-    ;mov dh, 4      ; Attempt to read 4 sectors from disk
-    ;mov bx, 0x7e00 ; into address 0x7E00, just after the bootsector
-    ;mov dl, [BOOT_DRIVE] ; Set read drive to BOOT_DRIVE
-    ;call disk_read
+    mov dh, 15
+    mov bx, KERNEL_OFFSET
+    mov dl, [BOOT_DRIVE]
+    call disk_read
 
     ; Put CPU in 32-bit protected mode
     cli
@@ -56,7 +56,10 @@ disk_read:
 
 BOOT_DRIVE: db 0
 
+KERNEL_OFFSET equ 0x1000
+
 [bits 32]
+
 _entry_point_pm:
     ; Init
     mov ax, dataseg
@@ -68,9 +71,7 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
-    mov al, 'X'
-    mov ah, 0x0f
-    mov [0xb8000], ax
+    call KERNEL_OFFSET
 
     jmp $
 
