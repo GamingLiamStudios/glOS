@@ -35,7 +35,7 @@ disk_read:
     ; Read info
     mov bx, PROGRAM_SPACE ; Memory for data
     mov dl, [BOOT_DISK] ; Disk
-    mov al, 4 ; Length in sectors
+    mov al, 32 ; Length in sectors
 
     ; Index
     mov ch, 0 ; Cylinder
@@ -62,7 +62,7 @@ disk_read:
     .end:
     ret
 
-PROGRAM_SPACE equ 0x7e00
+PROGRAM_SPACE equ 0x8000
 
 BOOT_DISK:
     db 0

@@ -13,9 +13,9 @@ _init_kernel:
 
     jmp $
 
-%include "bootloader/gdt.asm"
-%include "kernel/CPUID.asm"
-%include "kernel/identity_paging.asm"
+%include "source/bootloader/gdt.asm"
+%include "source/kernel/CPUID.asm"
+%include "source/kernel/identity_paging.asm"
 
 print:
     pusha
@@ -49,4 +49,4 @@ _init_kernel_64:
 
     jmp $
 
-times 2048 - ($ - $$) db 0 ; Fill rest of next 4 sectors
+times 2048 - ($ - $$) db 0
