@@ -13,8 +13,20 @@ _entry_point: ; Bootloader
     mov dl, [BOOT_DRIVE]
     call disk_read
 
-    ; Put CPU in 32-bit protected mode
+    ; Set VGA text mode 3
+    mov ax, 0x3
+    int 0x10
+
+    ; Disable interupts    
     cli
+
+    ; Enable A20 Line
+    ; TODO: Implement better version
+    in al, 0x92
+    or al, 2
+    out 0x92, al
+
+    ; Put CPU in 32-bit protected mode
     lgdt [gdt_descriptor]
     mov eax, cr0
     or eax, 1

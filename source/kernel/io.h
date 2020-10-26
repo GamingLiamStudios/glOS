@@ -1,22 +1,20 @@
 #pragma once
 #ifndef PORTIO
 #define PORTIO
-unsigned char port_in(unsigned short port) {
+inline unsigned char pinb(unsigned short port) {
     unsigned char result;
-    __asm__("in %%dx, %%al" : "=a"(result) : "d"(port));
+    __asm__ __volatile__("inb %1, %0" : "=a"(result) : "Nd"(port));
     return result;
 }
-unsigned short port_inw(unsigned short port) {
+inline unsigned short pinw(unsigned short port) {
     unsigned short result;
-    __asm__("in %%dx, %%ax" : "=a"(result) : "d"(port));
+    __asm__ __volatile__("inw %1, %0" : "=a"(result) : "Nd"(port));
     return result;
 }
-void port_out(unsigned short port, unsigned char data) {
-    __asm__("out %%al, %%dx" : : "a"(data), "d"(port));
+inline void poutb(unsigned short port, unsigned char data) {
+    __asm__ __volatile__("outb %0, %1" : : "a"(data), "Nd"(port));
 }
-void port_outw(unsigned short port, unsigned short data) {
-    __asm__("out %%ax, %%dx" : : "a"(data), "d"(port));
+inline void poutw(unsigned short port, unsigned short data) {
+    __asm__ __volatile__("outw %0, %1" : : "a"(data), "Nd"(port));
 }
 #endif
-
-#define VIDEO_ADDRESS 0xb8000
