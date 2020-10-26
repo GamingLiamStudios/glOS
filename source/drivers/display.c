@@ -33,17 +33,18 @@ void sprint(sprint_args in) {
 
     switch (c) {
         case '\n': {
-            // TODO: Fix new-line adding random character to end of line
             offset += VGA_COLS - (offset % VGA_COLS) - 1;
+            break;
         }
         default: {
             *((char *)VGA_MEMORY + offset * 2) = c;
             *((char *)VGA_MEMORY + offset * 2 + 1) = a;
+            break;
         }
     }
     offset++;
 
-    if (offset > VGA_COLS * VGA_ROWS) {
+    if (offset >= VGA_COLS * VGA_ROWS) {
         // Screen scrolling
         memcpy((char *)VGA_MEMORY, (char *)VGA_MEMORY + (VGA_COLS * 2),
                (VGA_COLS * VGA_ROWS * 2) - (VGA_COLS * 2));
