@@ -5,9 +5,9 @@
 #include "kernel/io.h"
 #include "kernel/memory.h"
 
-short cursor_get() {
+uint16_t cursor_get() {
     poutb(REG_SCREEN_CTRL, 14);
-    int offset = pinb(REG_SCREEN_DATA) << 8;
+    uint16_t offset = pinb(REG_SCREEN_DATA) << 8;
     poutb(REG_SCREEN_CTRL, 15);
     offset += pinb(REG_SCREEN_DATA);
     return offset;
@@ -26,7 +26,7 @@ void clear() {
 }
 
 void sprint(sprint_args in) {
-    short offset = cursor_get();  // Current Offset
+    uint16_t offset = cursor_get();  // Current Offset
     char c = in.c ? in.c : ' ';
     char a =
         in.a ? in.a : offset ? *((char *)VGA_MEMORY + offset * 2 - 1) : 0x1f;
@@ -66,7 +66,40 @@ void printf(const char *msg, ...) {
     while (*++str != '\0') {
         if (*str == '%') {
             // Formatting
+            /* TODO: Implement dynamic memory management
+            char c;
+            while (1) switch (*++str) {
+                    case 'd':
+                    case 'i': {
+                        uint32_t bin = va_arg(fmt, int);
 
+                        uint8_t size = 0;
+                        uint32_t size_tester = bin;
+                        while ((size_tester /= 10) > 0) size++;
+
+                        char *dec;
+                        uint8_t index = 0;
+                        if(bin < 0) {
+                            dec = (char *)malloc(size + 2);
+                            index++;
+                            size++;
+                            *dec = '-';
+                        } else {
+                            dec = (char*)malloc(size + 1);
+                        }
+
+                        size_tester = bin;
+                        while (size_tester / 10 > 0) {
+                            uint8_t remainder = size_tester % 10;
+                            size_tester /= 10;
+                            dec[size - index++] = remainder + 48;
+                        }
+                        uint8_t remainder = size_tester % 10;
+                        dec[size - index] = remainder + 48;
+                        dec[size + 1] = 0;
+                    } break;
+                }
+            */
         } else  // TODO: ANSI Escape Codes
             printc(*str);
     }

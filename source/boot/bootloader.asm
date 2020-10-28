@@ -83,6 +83,7 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
+    ; TODO: 64-bit mode
     call KERNEL_OFFSET
 
     jmp $
