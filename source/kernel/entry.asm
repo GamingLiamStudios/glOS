@@ -40,9 +40,7 @@ _detect_64:
     hlt ; TODO: 32-bit Support
 
 _enter_lm:
-    call id_paging_setup
-
-    jmp $
+    call id_paging_setup ; Fails Here
 
     ; Edit GDT for 64-bit usage
     mov byte [gdt_codedesc + 6], 10101111b

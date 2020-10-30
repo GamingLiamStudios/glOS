@@ -19,6 +19,8 @@ id_paging_setup:
         add edi, 8
         loop .set_entry
 
+    jmp $
+
     ; Enable Physical Address Extension Paging
     mov eax, cr4
     or eax, 1 << 5
