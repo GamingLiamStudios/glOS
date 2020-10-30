@@ -46,6 +46,8 @@ _enter_lm:
     mov byte [gdt_codedesc + 6], 10101111b
     mov byte [gdt_datadesc + 6], 10101111b
 
+    jmp $
+
     jmp codeseg:enter_kernel
 
     jmp $
