@@ -42,11 +42,11 @@ _detect_64:
 _enter_lm:
     call id_paging_setup
 
+    jmp $
+
     ; Edit GDT for 64-bit usage
     mov byte [gdt_codedesc + 6], 10101111b
     mov byte [gdt_datadesc + 6], 10101111b
-
-    jmp $
 
     jmp codeseg:enter_kernel
 
