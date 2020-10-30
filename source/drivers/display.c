@@ -79,6 +79,7 @@ void printf(const char *msg, ...) {
 
                         char *dec;
                         uint8_t index = 0;
+
                         if(bin < 0) {
                             dec = (char *)malloc(size + 2);
                             index++;

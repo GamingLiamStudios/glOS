@@ -1,3 +1,4 @@
+; Stuff for GDT
 gdt_nulldesc:
     dd 0
     dd 0

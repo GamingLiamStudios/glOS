@@ -8,6 +8,7 @@ _entry_point: ; Bootloader
     mov bp, 0x8000 
     mov sp, bp 
 
+    ; Read 15 sectors infront of boot sector
     mov dh, 15
     mov bx, KERNEL_OFFSET
     mov dl, [BOOT_DRIVE]
@@ -83,7 +84,7 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
-    ; TODO: 64-bit mode
+    ; Enter kernel
     call KERNEL_OFFSET
 
     jmp $
