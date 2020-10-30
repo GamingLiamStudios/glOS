@@ -41,9 +41,13 @@ _detect_64:
     hlt ; TODO: 32-bit Support
 
 _enter_lm:
-
+    call id_paging_setup
 
     jmp codeseg:enter_kernel
+
+    jmp $
+
+%include "source/kernel/id_paging.asm"
 
 cpuid_err: ; 'CPUID not Supported'
     dw 0x0f43, 0x0f50, 0x0f55, 0x0f49, 0x0f44, 0x0f20, 0x0f6e, 0x0f6f, 0x0f74, 0x0f20, 0x0f53, 0x0f75, 0x0f70, 0x0f70, 0x0f6f, 0x0f72, 0x0f74, 0x0f65, 0x0f64
