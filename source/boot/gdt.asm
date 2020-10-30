@@ -23,7 +23,7 @@ gdt_end:
 
 gdt_descriptor:
     dw gdt_end - gdt_nulldesc - 1
-    dd gdt_nulldesc
+    dq gdt_nulldesc
 
 codeseg equ gdt_codedesc - gdt_nulldesc
 dataseg equ gdt_datadesc - gdt_nulldesc 

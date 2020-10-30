@@ -1,5 +1,4 @@
 [bits 32]
-[extern _kernel]
 _detect_64:
     ; Detect CPUID
     pushfd
@@ -43,10 +42,15 @@ _detect_64:
 _enter_lm:
     call id_paging_setup
 
+    ; Edit GDT for 64-bit usage
+    mov byte [gdt_codedesc + 6], 10101111b
+    mov byte [gdt_datadesc + 6], 10101111b
+
     jmp codeseg:enter_kernel
 
     jmp $
 
+%include "source/boot/gdt.asm"
 %include "source/kernel/id_paging.asm"
 
 cpuid_err: ; 'CPUID not Supported'
@@ -56,7 +60,9 @@ lm_err: ; 64bit not Supported
     dw 0x0f36, 0x0f34, 0x0f62, 0x0f69, 0x0f74, 0x0f20, 0x0f6e, 0x0f6f, 0x0f74, 0x0f20, 0x0f53, 0x0f75, 0x0f70, 0x0f70, 0x0f6f, 0x0f72, 0x0f74, 0x0f65, 0x0f64
  
 [bits 64]
+[extern kernel]
 
 enter_kernel:
-    call _kernel
+    call kernel
+
     jmp $

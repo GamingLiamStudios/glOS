@@ -1,13 +1,13 @@
 SHELL = /bin/sh
-CFLAGS=-std=c99 -ffreestanding -m32 -Isource -O2 -c
+CFLAGS=-std=c99 -ffreestanding -m64 -Isource -O2 -c
 LDFLAGS=-Ttext 0x1000
 NFLAGS=-f
 ifeq ($(OS),Windows_NT)
-	NFLAGS += win
-	LDFLAGS += -mi386pe
+	NFLAGS += win64
+	LDFLAGS += -mi386pep
 else
-	NFLAGS += elf
-	LDFLAGE += -melf_i386
+	NFLAGS += elf64
+	LDFLAGS += -melf_x86_64
 endif
 
 C_SOURCES = $(wildcard source/kernel/*.c source/drivers/*.c)
