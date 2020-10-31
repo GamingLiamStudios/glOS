@@ -3,17 +3,16 @@ _detect_64:
     ; Detect CPUID
     pushfd
     pop eax
-
-    mov eax, ecx
+    mov ecx, eax
     xor eax, 1 << 21
     push eax
     popfd
 
     pushfd
     pop eax
-
     push ecx
     popfd
+
     xor eax, ecx
     jnz .detect_lm ; Detect long mode if CPUID is supported
 
@@ -26,11 +25,17 @@ _detect_64:
     hlt
 
     .detect_lm:
+    mov eax, 0x80000000
+    cpuid
+    cmp eax, 0x80000001
+    jb .no_lm
+
     mov eax, 0x80000001
     cpuid
     test edx, 1 << 29
     jnz _enter_lm
 
+    .no_lm
     ; Print error message
     mov esi, cpuid_err
     mov cx, 19
