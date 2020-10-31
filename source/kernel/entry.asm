@@ -55,6 +55,13 @@ _detect_64:
 _enter_lm:
     call id_paging_setup
 
+<<<<<<< HEAD
+=======
+    ; Edit GDT for 64-bit usage
+    mov byte [gdt_codedesc + 6], 10101111b
+    mov byte [gdt_datadesc + 6], 10101111b
+
+>>>>>>> parent of b6d9217... 64-bit GDT, bootloop tho
     jmp codeseg:enter_kernel
 
     jmp $
