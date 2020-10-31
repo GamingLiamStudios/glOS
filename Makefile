@@ -1,6 +1,6 @@
 SHELL = /bin/sh
-CFLAGS=-std=c99 -ffreestanding -m64 -Isource -O2 -c
-LDFLAGS=-Ttext 0x7e00
+CFLAGS=-std=c99 -ffreestanding -m32 -Isource -O2 -c
+LDFLAGS=-Ttext 0x1000
 NFLAGS=-f
 ifeq ($(OS),Windows_NT)
 	NFLAGS += win
