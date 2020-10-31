@@ -3,11 +3,11 @@ CFLAGS=-std=c99 -ffreestanding -m64 -Isource -O2 -c
 LDFLAGS=-Ttext 0x7e00
 NFLAGS=-f
 ifeq ($(OS),Windows_NT)
-	NFLAGS += win64
-	LDFLAGS += -mi386pep
+	NFLAGS += win
+	LDFLAGS += -mi386pe
 else
-	NFLAGS += elf64
-	LDFLAGS += -melf_x86_64
+	NFLAGS += elf
+	LDFLAGE += -melf_i386
 endif
 
 C_SOURCES = $(wildcard source/kernel/*.c source/drivers/*.c)
