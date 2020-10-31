@@ -1,6 +1,6 @@
 #include "drivers/display.h"
 
-void kernel() {
+void _kernel() {
     clear();
     printf("Hello World!\n");
     printf(

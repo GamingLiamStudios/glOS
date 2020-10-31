@@ -5,7 +5,7 @@ _entry_point: ; Bootloader
     mov [BOOT_DRIVE], dl ; Store current disk
 
     ; Initalize Stack
-    mov bp, 0xa000
+    mov bp, 0xa000 
     mov sp, bp 
 
     ; Read 15 sectors infront of boot sector
