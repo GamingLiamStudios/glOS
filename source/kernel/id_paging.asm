@@ -17,7 +17,7 @@ id_paging_setup:
     mov ebx, 0x00000003
     mov ecx, 512
 
-    .set_entry
+    .set_entry:
         mov dword [edi], ebx
         add ebx, 0x1000
         add edi, 8

@@ -84,10 +84,15 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
+    mov eax, 0x0f200f20
+    mov ecx, 1000
+    mov edi, 0xb8000
+    rep stosd
+
     ; Enter kernel
     call KERNEL_OFFSET
 
     jmp $
-
+    
 times 510 - ($ - $$) db 0 ; pad rest of bootsector
 dw 0xaa55 ; Bootloader Identifier

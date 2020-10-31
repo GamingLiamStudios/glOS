@@ -1,5 +1,12 @@
 [bits 32]
 _detect_64:
+    ; Clear VGA Buffer
+    mov eax, 0x0f200f20
+    mov ecx, 1000
+    mov edi, 0xb8000
+    cld
+    rep stosd
+
     ; Detect CPUID
     pushfd
     pop eax
@@ -24,7 +31,7 @@ _detect_64:
     rep movsw
     hlt
 
-    .detect_lm:
+    .detect_lm; Detect Long Mode support
     mov eax, 0x80000000
     cpuid
     cmp eax, 0x80000001
@@ -35,9 +42,9 @@ _detect_64:
     test edx, 1 << 29
     jnz _enter_lm
 
-    .no_lm
+    .no_lm:
     ; Print error message
-    mov esi, cpuid_err
+    mov esi, lm_err
     mov cx, 19
     mov edi, 0xb8000
     cld
@@ -45,7 +52,7 @@ _detect_64:
     hlt ; TODO: 32-bit Support
 
 _enter_lm:
-    call id_paging_setup ; Fails Here
+    call id_paging_setup
 
     ; Edit GDT for 64-bit usage
     mov byte [gdt_codedesc + 6], 10101111b
@@ -68,6 +75,11 @@ lm_err: ; 64bit not Supported
 [extern kernel]
 
 enter_kernel:
-    call kernel
+    mov edi, 0xB8000              ; Set the destination index to 0xB8000.
+    mov rax, 0x1F201F201F201F20   ; Set the A-register to 0x1F201F201F201F20.
+    mov ecx, 500                  ; Set the C-register to 500.
+    rep stosq 
+
+    ;call kernel
 
     jmp $
