@@ -69,7 +69,7 @@ disk_read:
 
 BOOT_DRIVE: db 0
 
-KERNEL_OFFSET equ 0x1000
+KERNEL_OFFSET equ 0x7e00
 
 [bits 32]
 
