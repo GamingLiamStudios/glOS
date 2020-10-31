@@ -5,7 +5,7 @@ _entry_point: ; Bootloader
     mov [BOOT_DRIVE], dl ; Store current disk
 
     ; Initalize Stack
-    mov bp, 0x8000 
+    mov bp, 0xa000
     mov sp, bp 
 
     ; Read 15 sectors infront of boot sector
@@ -83,11 +83,6 @@ _entry_point_pm:
     mov gs, ax
     mov ebp, 0x90000
     mov esp, ebp
-
-    mov eax, 0x0f200f20
-    mov ecx, 1000
-    mov edi, 0xb8000
-    rep stosd
 
     ; Enter kernel
     call KERNEL_OFFSET
