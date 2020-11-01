@@ -8,8 +8,8 @@ _entry_point: ; Bootloader
     mov bp, 0xa000 
     mov sp, bp 
 
-    ; Read 15 sectors infront of boot sector
-    mov dh, 15
+    ; Read 32 sectors infront of boot sector
+    mov dh, 32
     mov bx, KERNEL_OFFSET
     mov dl, [BOOT_DRIVE]
     call disk_read

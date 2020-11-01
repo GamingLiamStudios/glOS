@@ -1,6 +1,6 @@
 SHELL = /bin/sh
-CFLAGS=-std=c99 -ffreestanding -m64 -Isource -O2 -c
-LDFLAGS=-Ttext 0x7e00
+CFLAGS=-std=c99 -Ttext 0x7e00 -ffreestanding -m64 -Isource -O2 -c
+LDFLAGS=-T"link.ld" -nostdlib
 NFLAGS=-f
 ifeq ($(OS),Windows_NT)
 	NFLAGS += win64

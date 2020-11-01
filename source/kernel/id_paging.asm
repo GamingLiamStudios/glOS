@@ -1,3 +1,4 @@
+section .text
 page_table_entry equ 0x1000
 
 id_paging_setup:
