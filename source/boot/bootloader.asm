@@ -84,8 +84,35 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
-    ; Enter kernel
-    call KERNEL_OFFSET
+    ; Detect CPUID
+    pushfd
+    pop eax
+
+    mov eax, ecx
+    xor eax, 1 << 21
+    push eax
+    popfd
+
+    pushfd
+    pop eax
+
+    push ecx
+    popfd
+    xor eax, ecx
+    jnz KERNEL_OFFSET
+
+    ; Print error message
+    .str:
+        db 'CPUID not supported', 0
+    mov ah, 0x0e ; Write Char Function
+    mov si, .str ; Store address of string in si
+    mov al, [si] ; Move value of si to al
+    .loop:
+        int 0x10 ; Print char
+        inc si ; Increment address of si
+        mov al, [si] ; Move value of si to al
+        or al, al ; Check for null termination
+        jnz .loop
 
     jmp $
     
