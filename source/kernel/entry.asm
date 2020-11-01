@@ -45,6 +45,7 @@ _enter_lm:
     ; Edit GDT for 64-bit usage
     mov byte [gdt_codedesc + 6], 10101111b
     mov byte [gdt_datadesc + 6], 10101111b
+    lgdt [gdt_descriptor]
 
     jmp codeseg:enter_kernel
 
@@ -63,6 +64,14 @@ lm_err: ; 64bit not Supported
 [extern _kernel]
 
 enter_kernel:
+    ; Init
+    mov ax, dataseg
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
     call _kernel
 
     jmp $
