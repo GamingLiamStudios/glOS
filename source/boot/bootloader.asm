@@ -4,8 +4,14 @@ org 0x7c00
 _entry_point: ; Bootloader
     mov [BOOT_DRIVE], dl ; Store current disk
 
+    ; Enable A20 Line
+    ; TODO: Implement better version
+    in al, 0x92
+    or al, 2
+    out 0x92, al
+
     ; Initalize Stack
-    mov bp, 0xa000 
+    mov bp, 0xc000
     mov sp, bp 
 
     ; Read 32 sectors infront of boot sector
@@ -20,12 +26,6 @@ _entry_point: ; Bootloader
 
     ; Disable interupts    
     cli
-
-    ; Enable A20 Line
-    ; TODO: Implement better version
-    in al, 0x92
-    or al, 2
-    out 0x92, al
 
     ; Put CPU in 32-bit protected mode
     lgdt [gdt_descriptor]
