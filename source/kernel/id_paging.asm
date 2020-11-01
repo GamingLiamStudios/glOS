@@ -1,12 +1,15 @@
 page_table_entry equ 0x1000
 
 id_paging_setup:
+    ; Clear Page Tables
     mov edi, page_table_entry
     mov cr3, edi
     xor eax, eax
     mov ecx, 4096
     rep stosd
     mov edi, cr3
+
+    ; Setup Page Table Addresses
     mov dword [edi], 0x2003
     add edi, 0x1000
     mov dword [edi], 0x3003
@@ -14,6 +17,7 @@ id_paging_setup:
     mov dword [edi], 0x4003
     add edi, 0x1000
 
+    ; Identity map first 2MB
     mov ebx, 0x00000003
     mov ecx, 512
 
