@@ -84,6 +84,12 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
+    ; Clear VGA Memory
+    mov edi, 0xb8000
+    mov eax, 0x1f201f20
+    mov ecx, 1000
+    rep stosd
+
     ; Detect CPUID
     pushfd
     pop eax
@@ -102,19 +108,17 @@ _entry_point_pm:
     jnz KERNEL_OFFSET
 
     ; Print error message
-    .str:
-        db 'CPUID not supported', 0
-    mov ah, 0x0e ; Write Char Function
-    mov si, .str ; Store address of string in si
-    mov al, [si] ; Move value of si to al
-    .loop:
-        int 0x10 ; Print char
-        inc si ; Increment address of si
-        mov al, [si] ; Move value of si to al
-        or al, al ; Check for null termination
-        jnz .loop
+    mov esi, cpuid_err
+    mov cx, 19
+    mov edi, 0xb8000
+    cld
+    rep movsw
+    hlt
 
     jmp $
+
+cpuid_err: ; 'CPUID not Supported'
+    dw 0x1f43, 0x1f50, 0x1f55, 0x1f49, 0x1f44, 0x1f20, 0x1f6e, 0x1f6f, 0x1f74, 0x1f20, 0x1f53, 0x1f75, 0x1f70, 0x1f70, 0x1f6f, 0x1f72, 0x1f74, 0x1f65, 0x1f64
     
 times 510 - ($ - $$) db 0 ; pad rest of bootsector
 dw 0xaa55 ; Bootloader Identifier
