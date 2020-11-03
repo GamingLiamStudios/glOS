@@ -154,7 +154,7 @@ _entry_point_pm:
     push ecx
     popfd
     xor eax, ecx
-    jnz perr
+    jz perr
 
     mov esi, lm_err ; Load Relevent Error Message
 
