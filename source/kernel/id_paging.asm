@@ -1,9 +1,7 @@
 section .text
-page_table_entry equ 0x1000
-
 id_paging_setup:
     ; Clear Page Tables
-    mov edi, page_table_entry
+    mov edi, 0x1000
     mov cr3, edi
     xor eax, eax
     mov ecx, 4096
