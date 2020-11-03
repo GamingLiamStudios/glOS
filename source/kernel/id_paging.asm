@@ -1,4 +1,3 @@
-section .text
 id_paging_setup:
     ; Clear Page Tables
     mov edi, 0x1000

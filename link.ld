@@ -4,24 +4,24 @@ SECTIONS
 {
 	. = 0x7e00;
 
-	.text ALIGN(4K) :
+	.text : ALIGN(0x1000) 
 	{
-		KEEP(*(.text*))
+		*(.text)
 	}
 
-	.rodata ALIGN(4K) :
+	.rodata : ALIGN(0x1000) 
 	{
-		KEEP(*(.rodata*))
+		*(.rodata)
 	}
 
-	.data ALIGN(4K) :
+	.data : ALIGN(0x1000) 
 	{
-		KEEP(*(.data*))
+		*(.data)
 	}
 
-	.bss ALIGN(4K) :
+	.bss : ALIGN(0x1000) 
 	{
-		KEEP(*(COMMON))
-		KEEP(*(.bss*))
+		*(COMMON)
+		*(.bss)
 	}
 }
