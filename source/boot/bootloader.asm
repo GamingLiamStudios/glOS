@@ -4,12 +4,29 @@ org 0x7c00
 _entry_point: ; Bootloader
     mov [BOOT_DRIVE], dl ; Store current disk
 
-    ; Enable A20 Line
-    ; TODO: Implement better version
-    in al, 0x92
-    or al, 2
-    out 0x92, al
+    ; Attempt to set A20 Bit using BIOS
+    mov     ax,2403h
+    int     15h
+    jb      .after
+    cmp     ah,0
+    jnz     .after
+ 
+    mov     ax,2402h
+    int     15h
+    jb      bperr
+    cmp     ah,0
+    jnz     bperr
+ 
+    cmp     al,1
+    jz      .after
+ 
+    mov     ax,2401h
+    int     15h
+    jb      bperr
+    cmp     ah,0
+    jnz     bperr
 
+    .after:
     ; Initalize Stack
     mov bp, 0xc000
     mov sp, bp 
@@ -51,9 +68,15 @@ disk_read:
 
     ; An error occured. Print an error message
     .str:
-        db 'Disk Read Error', 0
-    mov ah, 0x0e ; Write Char Function
+        db 'Disk Error', 0
     mov si, .str ; Store address of string in si
+    jmp bperr
+
+    .end:
+    ret
+
+bperr:
+    mov ah, 0x0e ; Write Char Function
     mov al, [si] ; Move value of si to al
     .loop:
         int 0x10 ; Print char
@@ -61,9 +84,7 @@ disk_read:
         mov al, [si] ; Move value of si to al
         or al, al ; Check for null termination
         jnz .loop
-
-    .end:
-    ret
+    hlt
 
 %include "source/boot/gdt.asm"
 
@@ -72,6 +93,16 @@ BOOT_DRIVE: db 0
 KERNEL_OFFSET equ 0x7e00
 
 [bits 32]
+
+detect_a20:   
+    pushad
+    mov edi,0x112345
+    mov esi,0x012345
+    mov [esi],esi
+    mov [edi],edi
+    cmpsd
+    popad
+    ret
 
 _entry_point_pm:
     ; Init
@@ -84,6 +115,23 @@ _entry_point_pm:
     mov ebp, 0x90000
     mov esp, ebp
 
+    ; Enable A20 Line
+    mov esi, a20_err ; Load Relevent Error Message
+
+    ; First, check if already enabled
+    call detect_a20
+    jne .a20enabled
+
+    ; Try Fast A20
+    in al, 0x92
+    or al, 2
+    out 0x92, al
+
+    ; Check if Fast A20 Worked
+    call detect_a20
+    je perr
+
+    .a20enabled:
     ; Clear VGA Memory
     mov edi, 0xb8000
     mov eax, 0x1f201f20
@@ -106,7 +154,7 @@ _entry_point_pm:
     push ecx
     popfd
     xor eax, ecx
-    jz perr
+    jnz perr
 
     mov esi, lm_err ; Load Relevent Error Message
 
@@ -134,19 +182,27 @@ _entry_point_pm:
 
 perr:
     ; Print error message
-    mov cx, 19
     mov edi, 0xb8000
-    cld
-    rep movsw
-    hlt ; TODO: 32-bit Support
+    mov ah, 0x1c
+    .loop:
+        mov al, [esi]
+        mov [edi], ax
+        add edi, 2
+        inc esi
+        or al, al
+        jnz .loop
+    hlt
 
 %include "source/boot/id_paging.asm"
 
-cpuid_err: ; 'CPUID not Supported'
-    dw 0x1f43, 0x1f50, 0x1f55, 0x1f49, 0x1f44, 0x1f20, 0x1f6e, 0x1f6f, 0x1f74, 0x1f20, 0x1f53, 0x1f75, 0x1f70, 0x1f70, 0x1f6f, 0x1f72, 0x1f74, 0x1f65, 0x1f64
+a20_err:
+    db 'set A20 failed', 0
 
-lm_err: ; 64bit not Supported
-    dw 0x1f36, 0x1f34, 0x1f62, 0x1f69, 0x1f74, 0x1f20, 0x1f6e, 0x1f6f, 0x1f74, 0x1f20, 0x1f53, 0x1f75, 0x1f70, 0x1f70, 0x1f6f, 0x1f72, 0x1f74, 0x1f65, 0x1f64
+cpuid_err:
+    db 'no CPUID', 0
+
+lm_err:
+    db 'no 64-bit CPU', 0
   
 times 510 - ($ - $$) db 0 ; pad rest of bootsector
 dw 0xaa55 ; Bootloader Identifier
