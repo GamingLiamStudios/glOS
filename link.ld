@@ -1,4 +1,4 @@
-ENTRY(_enter_lm)
+ENTRY(_enter_kernel)
 
 SECTIONS
 {
@@ -6,22 +6,22 @@ SECTIONS
 
 	.text : ALIGN(0x1000) 
 	{
-		*(.text)
+		KEEP(*(.text))
 	}
 
 	.rodata : ALIGN(0x1000) 
 	{
-		*(.rodata)
+		KEEP(*(.rodata))
 	}
 
 	.data : ALIGN(0x1000) 
 	{
-		*(.data)
+		KEEP(*(.data))
 	}
 
 	.bss : ALIGN(0x1000) 
 	{
-		*(COMMON)
-		*(.bss)
+		KEEP(*(COMMON))
+		KEEP(*(.bss))
 	}
 }

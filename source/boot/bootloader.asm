@@ -14,8 +14,8 @@ _entry_point: ; Bootloader
     mov bp, 0xc000
     mov sp, bp 
 
-    ; Read 32 sectors infront of boot sector
-    mov dh, 32
+    ; Read 25 sectors infront of boot sector
+    mov dh, 25
     mov bx, KERNEL_OFFSET
     mov dl, [BOOT_DRIVE]
     call disk_read
@@ -91,6 +91,7 @@ _entry_point_pm:
     rep stosd
 
     ; Detect CPUID
+    mov esi, cpuid_err ; Load Relevent Error Message
     pushfd
     pop eax
 
@@ -105,20 +106,47 @@ _entry_point_pm:
     push ecx
     popfd
     xor eax, ecx
-    jnz KERNEL_OFFSET
+    jz perr
 
+    mov esi, lm_err ; Load Relevent Error Message
+
+    ; Check if Extended Functions exist
+    mov eax, 0x80000000
+    cpuid
+    cmp eax, 0x80000001
+    jb perr
+
+    ; Check for Long Mode
+    mov eax, 0x80000001
+    cpuid
+    test edx, 1 << 29
+    jz perr
+
+    call id_paging_setup
+
+    ; Edit GDT for 64-bit usage
+    mov [gdt_codedesc + 6], byte 10101111b
+    mov [gdt_datadesc + 6], byte 10101111b
+
+    jmp codeseg:KERNEL_OFFSET
+
+    jmp $
+
+perr:
     ; Print error message
-    mov esi, cpuid_err
     mov cx, 19
     mov edi, 0xb8000
     cld
     rep movsw
-    hlt
+    hlt ; TODO: 32-bit Support
 
-    jmp $
+%include "source/boot/id_paging.asm"
 
 cpuid_err: ; 'CPUID not Supported'
     dw 0x1f43, 0x1f50, 0x1f55, 0x1f49, 0x1f44, 0x1f20, 0x1f6e, 0x1f6f, 0x1f74, 0x1f20, 0x1f53, 0x1f75, 0x1f70, 0x1f70, 0x1f6f, 0x1f72, 0x1f74, 0x1f65, 0x1f64
-    
+
+lm_err: ; 64bit not Supported
+    dw 0x1f36, 0x1f34, 0x1f62, 0x1f69, 0x1f74, 0x1f20, 0x1f6e, 0x1f6f, 0x1f74, 0x1f20, 0x1f53, 0x1f75, 0x1f70, 0x1f70, 0x1f6f, 0x1f72, 0x1f74, 0x1f65, 0x1f64
+  
 times 510 - ($ - $$) db 0 ; pad rest of bootsector
 dw 0xaa55 ; Bootloader Identifier
