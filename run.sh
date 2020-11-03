@@ -1,2 +1,2 @@
 make build
-qemu build/boot.bin
+qemu build/boot.bin -no-reboot
