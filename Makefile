@@ -10,8 +10,10 @@ else
 	LDFLAGS += -melf_x86_64
 endif
 
-C_SOURCES = $(wildcard source/kernel/*.c source/drivers/*.c)
-HEADERS = $(wildcard source/kernel/*.h source/drivers/*.h)
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
+C_SOURCES = $(call rwildcard,source,*.c)
+HEADERS = $(call rwildcard,source,*.h)
 OBJ = ${C_SOURCES:.c=.o}
 
 all: build

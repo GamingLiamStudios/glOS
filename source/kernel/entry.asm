@@ -7,3 +7,5 @@ _enter_kernel:
     call _kernel
 
     jmp $
+
+%include "source/kernel/IDT/idt.asm"

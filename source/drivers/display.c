@@ -66,7 +66,6 @@ void printf(const char *msg, ...) {
     while (*++str != '\0') {
         if (*str == '%') {
             // Formatting
-            /* TODO: Implement dynamic memory management
             char c;
             while (1) switch (*++str) {
                     case 'd':
@@ -77,31 +76,31 @@ void printf(const char *msg, ...) {
                         uint32_t size_tester = bin;
                         while ((size_tester /= 10) > 0) size++;
 
-                        char *dec;
                         uint8_t index = 0;
 
-                        if(bin < 0) {
-                            dec = (char *)malloc(size + 2);
+                        if (bin < 0) {
                             index++;
                             size++;
-                            *dec = '-';
-                        } else {
-                            dec = (char*)malloc(size + 1);
+                            *format_buf = '-';
+                            bin = ~bin & 0x7FFFFFFF;
                         }
 
                         size_tester = bin;
                         while (size_tester / 10 > 0) {
                             uint8_t remainder = size_tester % 10;
                             size_tester /= 10;
-                            dec[size - index++] = remainder + 48;
+                            format_buf[size - index++] = remainder + 48;
                         }
                         uint8_t remainder = size_tester % 10;
-                        dec[size - index] = remainder + 48;
-                        dec[size + 1] = 0;
+                        format_buf[size - index] = remainder + 48;
+                        format_buf[size + 1] = 0;
+
+                        printf(format_buf);  // Print Recently decoded text
                     } break;
                 }
-            */
         } else  // TODO: ANSI Escape Codes
             printc(*str);
     }
+
+    va_end(fmt);
 }

@@ -1,9 +1,9 @@
 #pragma once
 #ifndef IDTH
 #define IDTH
-#include "typedef.h"
+#include "kernel/typedef.h"
 struct IDT64 {
-    u16 offset_lo;
+    u16 offset_low;
     u16 selector;
     u8 ist;
     u8 types_attr;
@@ -12,7 +12,10 @@ struct IDT64 {
     u32 zero;
 };
 
-struct IDT64 _idt[256];
+extern struct IDT64 _idt[256];
+extern u64 isr1;
+extern void loadIDT();
 
 void initIDT();
+void _isr1_handler();
 #endif
