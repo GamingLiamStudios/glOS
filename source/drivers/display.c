@@ -5,9 +5,9 @@
 #include "kernel/io.h"
 #include "kernel/memory.h"
 
-uint16_t cursor_get() {
+u16 cursor_get() {
     poutb(REG_SCREEN_CTRL, 14);
-    uint16_t offset = pinb(REG_SCREEN_DATA) << 8;
+    u16 offset = pinb(REG_SCREEN_DATA) << 8;
     poutb(REG_SCREEN_CTRL, 15);
     offset += pinb(REG_SCREEN_DATA);
     return offset;
@@ -26,7 +26,7 @@ void clear() {
 }
 
 void sprint(sprint_args in) {
-    uint16_t offset = cursor_get();  // Current Offset
+    u16 offset = cursor_get();  // Current Offset
     char c = in.c ? in.c : ' ';
     char a =
         in.a ? in.a : offset ? *((char *)VGA_MEMORY + offset * 2 - 1) : 0x1f;
@@ -67,18 +67,19 @@ void printf(const char *msg, ...) {
         if (*str == '%') {
             // Formatting
             char c;
-            while (1) switch (*++str) {
+            int next = 1;
+            while (next) switch (*++str) {
                     case 'd':
                     case 'i': {
-                        uint32_t bin = va_arg(fmt, int);
+                        u32 bin = va_arg(fmt, int);
 
-                        uint8_t size = 0;
-                        uint32_t size_tester = bin;
+                        u8 size = 0;
+                        u32 size_tester = bin;
                         while ((size_tester /= 10) > 0) size++;
 
-                        uint8_t index = 0;
+                        u8 index = 0;
 
-                        if (bin < 0) {
+                        if ((int)bin < 0) {
                             index++;
                             size++;
                             *format_buf = '-';
@@ -87,17 +88,18 @@ void printf(const char *msg, ...) {
 
                         size_tester = bin;
                         while (size_tester / 10 > 0) {
-                            uint8_t remainder = size_tester % 10;
+                            u8 remainder = size_tester % 10;
                             size_tester /= 10;
                             format_buf[size - index++] = remainder + 48;
                         }
-                        uint8_t remainder = size_tester % 10;
+                        u8 remainder = size_tester % 10;
                         format_buf[size - index] = remainder + 48;
                         format_buf[size + 1] = 0;
 
-                        printf(format_buf);  // Print Recently decoded text
+                        next = 0;
                     } break;
                 }
+            printf(format_buf);
         } else  // TODO: ANSI Escape Codes
             printc(*str);
     }

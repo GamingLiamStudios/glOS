@@ -1,7 +1,7 @@
 [extern _idt]
 idt_descriptor:
     dw 4095
-    dw _idt
+    dq _idt
 
 %macro PUSHALL 0
     push rax

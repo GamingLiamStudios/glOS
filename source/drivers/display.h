@@ -2,7 +2,7 @@
 #ifndef DISPLAYH
 #define DISPLAYH
 
-#include <stdint.h>  // uintxx_t
+#include "kernel/typedef.h"
 
 #define VGA_MEMORY 0xb8000
 #define VGA_ROWS 25
@@ -21,7 +21,7 @@ typedef struct {
 } sprint_args;
 
 // Display functions
-uint16_t cursor_get();
+u16 cursor_get();
 void cursor_set(short pos);
 void clear();
 

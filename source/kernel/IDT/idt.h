@@ -8,7 +8,7 @@ struct IDT64 {
     u8 ist;
     u8 types_attr;
     u16 offset_mid;
-    u16 offset_hi;
+    u32 offset_hi;
     u32 zero;
 };
 
