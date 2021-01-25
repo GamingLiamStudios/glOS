@@ -28,7 +28,7 @@ _entry_point: ; Bootloader
 
     .after:
     ; Initalize Stack
-    mov bp, 0xc000
+    mov bp, 0xf000
     mov sp, bp 
 
     ; Read 25 sectors infront of boot sector
@@ -112,7 +112,7 @@ _entry_point_pm:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    mov ebp, 0x90000
+    mov ebp, 0xf0000
     mov esp, ebp
 
     ; Enable A20 Line
@@ -137,6 +137,8 @@ _entry_point_pm:
     mov eax, 0x1f201f20
     mov ecx, 1000
     rep stosd
+
+    ; TODO: Support 32-bit
 
     ; Detect CPUID
     mov esi, cpuid_err ; Load Relevent Error Message

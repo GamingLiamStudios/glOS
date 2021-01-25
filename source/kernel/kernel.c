@@ -3,7 +3,6 @@
 
 void _kernel() {
     initIDT();
-    clear();
     printf("Hello World!\n");
     printf(
         "Isn't it lovely to have printf working?\nIts nice for me, at "

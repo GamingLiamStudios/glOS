@@ -29,4 +29,5 @@ void clear();
 void sprint(sprint_args in);  // Print char to screen
 #define printc(...) sprint((sprint_args){__VA_ARGS__});
 void printf(const char *str, ...);
+
 #endif

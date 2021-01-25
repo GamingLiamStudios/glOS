@@ -62,7 +62,7 @@ void printf(const char *msg, ...) {
     va_list fmt;
     va_start(fmt, msg);
 
-    char *str = msg - 1;
+    char const *str = msg - 1;
     while (*++str != '\0') {
         if (*str == '%') {
             // Formatting
