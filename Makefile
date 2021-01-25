@@ -14,31 +14,38 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 
 C_SOURCES = $(call rwildcard,source,*.c)
 HEADERS = $(call rwildcard,source,*.h)
-OBJ = ${C_SOURCES:.c=.o}
+OBJ = ${C_SOURCES:%.c=build/%.o}
+DIRS = $(sort $(dir ${OBJ}))
 
 all: build
 
-build: clean build/boot.bin
+build: dirs build/boot.bin
 
 # Compile Bootloader & append Kernel
 build/boot.bin: source/boot/bootloader.asm build/kernel.bin
 	@echo Combining...
-	@nasm $< -f bin -o $@ && dd if=build/kernel.bin of=$@ status=none conv=notrunc oflag=append && rm build/kernel.bin
+	@nasm $< -f bin -o $@ \
+	 && dd if=build/kernel.bin of=$@ status=none conv=notrunc oflag=append \
+	 && rm build/kernel.bin
 
 # Link Kernel
-build/kernel.bin: build/kernel.tmp
+build/kernel.bin: build/kernel.o
 	@echo Linking $@
-	@objcopy -O binary $< $@; rm -f build/kernel.tmp
-build/kernel.tmp: build/entry.o ${OBJ}
-	@ld -o $@ $(LDFLAGS) $^; rm -f $^
+	@objcopy -O binary $< $@
+build/kernel.o: build/source/kernel/entry.o ${OBJ}
+	@ld -o $@ $(LDFLAGS) $^
 
 # Compile Kernel
-build/entry.o: source/kernel/entry.asm
+build/source/kernel/entry.o: source/kernel/entry.asm
 	@echo Compiling $<
 	@nasm $< $(NFLAGS) -o $@
-%.o: %.c $(HEADERS)
+build/%.o: %.c $(HEADERS)
 	@echo Compiling $<
 	@gcc $(CFLAGS) $< -o $@
 
+dirs:
+	@mkdir -p ${DIRS}
+
+.PHONY: clean
 clean:
-	rm -f build/*.bin
+	@rm -r build/*.* build/source
