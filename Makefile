@@ -18,21 +18,27 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: build
 
-build: build/boot.bin
+build: clean build/boot.bin
 
-# Compile Bootloader
+# Compile Bootloader & append Kernel
 build/boot.bin: source/boot/bootloader.asm build/kernel.bin
-	nasm $< -f bin -o $@; dd if=build/kernel.bin of=$@ status=none conv=notrunc oflag=append
+	@echo Combining...
+	@nasm $< -f bin -o $@ && dd if=build/kernel.bin of=$@ status=none conv=notrunc oflag=append && rm build/kernel.bin
 
+# Link Kernel
 build/kernel.bin: build/kernel.tmp
-	objcopy -O binary $< $@; rm -f build/kernel.tmp
+	@echo Linking $@
+	@objcopy -O binary $< $@; rm -f build/kernel.tmp
 build/kernel.tmp: build/entry.o ${OBJ}
-	ld -o $@ $(LDFLAGS) $^; rm -f $^
+	@ld -o $@ $(LDFLAGS) $^; rm -f $^
 
+# Compile Kernel
 build/entry.o: source/kernel/entry.asm
-	nasm $< $(NFLAGS) -o $@
+	@echo Compiling $<
+	@nasm $< $(NFLAGS) -o $@
 %.o: %.c $(HEADERS)
-	gcc $(CFLAGS) $< -o $@
+	@echo Compiling $<
+	@gcc $(CFLAGS) $< -o $@
 
 clean:
-	rm -f build/*
+	rm -f build/*.bin
