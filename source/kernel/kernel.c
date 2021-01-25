@@ -1,5 +1,5 @@
 #include "drivers/display.h"
-#include "kernel/IDT/idt.h"
+#include "kernel/interrupts/idt.h"
 
 void _kernel()
 {

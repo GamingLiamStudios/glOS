@@ -8,4 +8,4 @@ _enter_kernel:
 
     jmp $
 
-%include "source/kernel/IDT/idt.asm"
+%include "source/kernel/interrupts/idt.asm"
