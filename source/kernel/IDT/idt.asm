@@ -1,8 +1,3 @@
-[extern _idt]
-idt_descriptor:
-    dw 4095
-    dq _idt
-
 %macro PUSHALL 0
     push rax
     push rcx
@@ -23,16 +18,26 @@ idt_descriptor:
     pop rax
 %endmacro
 
+idt_load:
+	lidt [rdi]
+
+    ; Enable only the keyboard
+    mov al, 0xfd
+    out 0x21, al
+    mov al, 0xff
+    out 0xa1, al
+
+    sti
+	ret
+    global idt_load
+
 [extern _isr1_handler]
 isr1:
+    hlt
     PUSHALL
+    cld
     call _isr1_handler
     POPALL
     iretq
     global isr1
-
-loadIDT:
-    lidt [idt_descriptor]
-    sti
-    ret
-    global loadIDT
+    

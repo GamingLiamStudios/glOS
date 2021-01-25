@@ -13,6 +13,7 @@ SECTIONS
 	{
 		_idt = .;
 		. = . + 0x1000;
+		KEEP(*(.idt))
 	}
 
 	.rodata : ALIGN(0x1000)
