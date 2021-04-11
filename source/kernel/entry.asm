@@ -7,5 +7,3 @@ _enter_kernel:
     call _kernel
 
     jmp $
-
-%include "source/kernel/interrupts/idt.asm"

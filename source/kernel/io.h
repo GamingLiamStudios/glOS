@@ -1,7 +1,4 @@
 #pragma once
-#ifndef PORTIO
-#define PORTIO
-
 #define PIC1_COMMAND 0x20
 #define PIC1_DATA    0x21
 #define PIC2_COMMAND 0xA0
@@ -31,5 +28,3 @@ inline void poutw(unsigned short port, unsigned short data)
 {
     __asm__ __volatile__("outw %0, %1" : : "a"(data), "Nd"(port));
 }
-
-#endif

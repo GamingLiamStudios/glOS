@@ -28,7 +28,7 @@ void clear()
     cursor_set(0);
 }
 
-void sprint(sprint_args in)
+void sprint(struct sprint_args in)
 {
     u16  offset = cursor_get();    // Current Offset
     char c      = in.c ? in.c : ' ';
