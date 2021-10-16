@@ -2,18 +2,11 @@ ENTRY(_enter_kernel)
 
 SECTIONS
 {
-	. = 0x7e00;
+	. = 0x8000;
 
 	.text : ALIGN(0x1000)
 	{
 		KEEP(*(.text))
-	}
-
-	.idt BLOCK(0x1000) : ALIGN(0x1000) /* Could probably use this for other predefined memory spaces */
-	{
-		_idt = .;
-		. = . + 0x1000;
-		KEEP(*(.idt))
 	}
 
 	.rodata : ALIGN(0x1000)
@@ -31,4 +24,5 @@ SECTIONS
 		KEEP(*(COMMON))
 		KEEP(*(.bss))
 	}
+	
 }

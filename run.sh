@@ -1,1 +1,1 @@
-make build && qemu build/boot.bin -no-reboot
+make build && qemu-system-i386 -hda build/boot.bin
