@@ -1,8 +1,13 @@
 [org 0x7c00]
     xor ax, ax ; make it zero
     mov ds, ax
+    mov di, ax
     cld
 
+    mov ax, 0xb800   ; text video memory
+    mov es, ax
+
+    mov ah, 0x0F ; Attribute
     mov si, msg
     call print_str
 hang:
@@ -12,9 +17,11 @@ print_str:
     lodsb
     or al, al  ; Check for null-teminator
     jz .exit
-    mov ah, 0x0E
-    mov bh, 0
-    int 0x10
+
+    ; Write char
+    mov ah, 0x0F
+    stosw
+
     jmp print_str
 .exit:
     ret
