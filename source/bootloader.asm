@@ -1,21 +1,23 @@
 [org 0x7c00]
+    xor ax, ax ; make it zero
+    mov ds, ax
+    cld
 
-xor ax, ax ; make it zero
-mov ds, ax
+    mov si, msg
+    call print_str
+hang:
+    jmp hang
 
-mov si, msg
-cld
-ch_loop:
+print_str:
     lodsb
     or al, al  ; Check for null-teminator
-    jz hang
+    jz .exit
     mov ah, 0x0E
     mov bh, 0
     int 0x10
-    jmp ch_loop
-
-hang:
-    jmp hang
+    jmp print_str
+.exit:
+    ret
 
 msg: db 'Hello World!', 0
 
