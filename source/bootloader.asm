@@ -52,17 +52,90 @@ entry_point_32:
     mov esp, ebp
 
     ; Clear Screen
-    mov edi, 0xB8000   ; text video memory
+    mov edi, 0xB8000   ; Text Video Memory address
     mov eax, 0x1f201f20
     mov ecx, 1000
     rep stosd
 
+    ; Test A20
+    call test_A20
+    jne .a20_enabled
+
+    ; A20 is not enabled. Try again with a different method
+    call A20_wait
+    mov al,0xAD
+    out 0x64,al
+
+    call A20_wait
+    mov al,0xD0
+    out 0x64,al
+
+    call A20_wait2
+    in al,0x60
+    push eax
+
+    call A20_wait
+    mov al,0xD1
+    out 0x64,al
+
+    call A20_wait
+    pop eax
+    or al,2
+    out 0x60,al
+
+    call A20_wait
+    mov al,0xAE
+    out 0x64,al
+
+    call A20_wait
+    call test_A20
+    jne .a20_enabled
+
+    ; If that STILL didn't work, then try one last time
+    in al, 0x92
+    test al, 2
+    jnz .failed_A20 ; Probably
+    or al, 2
+    and al, 0xFE
+    out 0x92, al
+
+    .a20_enabled:
+    ; Don't mind the placement of this
     mov edi, 0xB8000   ; text video memory
     mov ah, 0x1F ; Attribute
+    mov si, A20_failed
+    
+    call test_A20
+    je .failed_A20
+
     mov si, msg
+
+    .failed_A20:
     call print_str
 hang:
     jmp hang
+
+test_A20:  ; Some magic that's not mine lol 
+    pushad
+    mov edi,0x112345
+    mov esi,0x012345
+    mov [esi], esi
+    mov [edi], edi
+    cmpsd
+    popad
+    ret
+
+A20_wait:
+    in      al,0x64
+    test    al,2
+    jnz     A20_wait
+    ret
+
+A20_wait2:
+    in      al,0x64
+    test    al,1
+    jz      A20_wait2
+    ret
 
 print_str:
     lodsb
@@ -89,6 +162,7 @@ print_str:
     ret
 
 msg: db 'Hello World!', 0x0A, 'New lines!', 0
+A20_failed: db 'Unable to set A20.', 0
 
 times 510 - ($ - $$) db 0 ; Ensures that the boot-sector doesn't go over 512 bytes
 dw 0xAA55 ; This tells the BIOS that is the boot sector
